@@ -1,6 +1,6 @@
 <template>
   <div class="details container">
-    <h1 class="page-header">{{customer}}</h1>
+    <h1 class="page-header">{{customer}}'s age {{age}}</h1>
     <form v-on:submit="getPlayerInfos">
     <button type="submit" class="btn btn-primary">Submit</button>
     </form>
@@ -13,7 +13,7 @@ export default {
   data () {
     return {
       customer: '',
-      wave: ''
+      age: 0
     }
   },
 
@@ -30,13 +30,19 @@ export default {
 
     getPlayerInfos (e) {
       var reqUrl = 'http://localhost:8001/hello_1'
-      reqUrl += '?wave=111&name=' + this.customer
-      this.$axios.get(reqUrl).then((response) => {
-        console.log(response.data)
-        this.customer = response.data
-      }).catch(function (error) {
-        console.log(error)
-      })
+      const data = new FormData()
+      data.append('name', 'GeekPanshi')
+      data.append('age', this.age)
+      this.$axios.post(reqUrl, data)
+        .then((response) => {
+          console.log(response.status)
+          console.log(response.data)
+          this.customer = response.data['name']
+          this.age = response.data['age']
+        }).catch(function (error) {
+          console.log(reqUrl)
+          console.log(error)
+        })
     }
   },
   created: function () {
